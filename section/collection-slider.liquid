@@ -1,0 +1,154 @@
+<div class="container">
+   {% if section.settings.title != blank %}
+   <div class="section_title-wrapper">
+      <div class="section_title-inner slide-up-animation animated">
+         <h2 class="section_title-text-1">{{section.settings.title}}</h2>
+      </div>
+   </div>
+   {% endif %}
+  {% if section.blocks.size > 0 %}
+      <div class="bs-wrap">
+         <div class="bs-slider owl-carousel owl-theme">
+            {% for block in section.blocks %}
+               <div class="bs-item">
+                  <div class="bs-i-wrap">
+                     <div class="top">
+                       	{% assign collection = collections[block.settings.collection] %}
+                        
+                       {% if collection.image %}
+                          {%- assign collection_image = collection.image -%}
+                        {% elsif collection.products.first and collection.products.first.images != empty %}
+                          {%- assign collection_image = collection.products.first.featured_image -%}
+                        {% else %}
+                          {% assign collection_image = blank %}
+                        {% endif %}
+                       
+                        {% if collection_image != blank %}
+                           <a href="{{collection.url}}">
+                           <img src="{{collection_image | img_url: '500x'}}" alt="{{collection_image.alt}}">
+                           </a>
+                        {% endif %}
+                     </div>
+                  </div>
+               </div>
+            {% endfor %}
+         </div>      
+      </div>
+  {% endif %}
+</div>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
+{% assign desktop = section.settings.desktop %}
+{% assign tablet = section.settings.tablet %}
+{% assign mobile = section.settings.mobile %}
+<script>
+   jQuery(document).ready(function($) {
+      $(".bs-slider").owlCarousel({
+         loop:true,
+          margin:15,
+          nav:true,
+          rewind: false,
+          dots:false,
+        smartSpeed:200,
+
+          responsive:{
+              0:{
+                items:{{mobile}},
+                   margin:0,
+                  slideBy: 1
+              },
+              750:{
+                  items:{{tablet}},
+                  slideBy: 1
+              },
+              1025:{
+                  items:{{desktop}},
+                  nav:true,
+                  rewind: false,
+                  slideBy: 1
+              }
+          }
+      });
+   });
+</script>
+{% schema %}
+{
+  "name": "Collection Slider",
+  "class": "bs",
+  "max_blocks": 20,
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Heading",
+      "default": "Title"
+    },
+    {
+        "type": "range",
+        "id": "desktop",
+        "min": 3,
+        "max": 6,
+        "step": 1,
+        "label": "Desktop Per Row",
+        "default": 4
+    },
+    {
+        "type": "range",
+        "id": "tablet",
+        "min": 2,
+        "max": 6,
+        "step": 1,
+        "label": "Tablet Per Row",
+        "default": 3
+    },
+    {
+        "type": "range",
+        "id": "mobile",
+        "min": 1,
+        "max": 3,
+        "step": 1,
+        "label": "Mobile Per Row",
+        "default": 2
+    }
+  ],
+  "blocks": [
+    {
+      "type": "collection",
+      "name": "Collection",
+      "settings": [
+        {
+          "type": "collection",
+          "id": "collection",
+          "label": "Collection"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Collection Slider",
+      "category": "Collection",
+      "blocks": [
+        { 
+          "type": "collection"
+        },
+        {
+          "type": "collection"
+        },
+        {
+          "type": "collection"
+        },
+        {
+          "type": "collection"
+        },
+        {
+          "type": "collection"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
